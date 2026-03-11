@@ -141,7 +141,7 @@ class LLMClient:
             resp = self.model.generate_content(
                 [{"role": "user", "parts": [{"text": system_prompt + "\n\n" + user_prompt}]}],
                 generation_config=genai.types.GenerationConfig(
-                    temperature=0.3,
+                    temperature=0.2,
                     max_output_tokens=2048,
                 ),
             )

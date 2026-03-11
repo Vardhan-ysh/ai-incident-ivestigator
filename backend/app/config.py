@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     debug: bool = False
 
     # Database Settings
-    database_url: str = 'sqlite:////app/data/incidents.db'
+    database_url: str = 'sqlite:///./data/incidents.db'
 
     # ChromaDB Cloud Settings
     chroma_api_key: str = ''
@@ -18,8 +18,7 @@ class Settings(BaseSettings):
 
     # Google Gemini Settings
     gemini_api_key: str = ''
-    embedding_model: str = 'models/embedding-001'
-    embedding_dim: int = 768
+    embedding_model: str = 'models/gemini-embedding-001'
     reasoning_model: str = 'gemini-2.0-flash'
 
     # Pipeline Hyperparameters
@@ -31,7 +30,7 @@ class Settings(BaseSettings):
     api_key: str = 'admin-secret-key'
 
     model_config = SettingsConfigDict(
-        env_file='.env', env_file_encoding='utf-8', extra='ignore'
+        env_file=['.env', '../.env'], env_file_encoding='utf-8', extra='ignore'
     )
 
 

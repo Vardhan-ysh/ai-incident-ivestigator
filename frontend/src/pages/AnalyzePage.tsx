@@ -15,7 +15,6 @@ export default function AnalyzePage() {
   const [result, setResult] = useState<AnalyzeResponse | null>(null);
 
   useEffect(() => {
-    // If navigated from Sandbox with state, pre-fill the inputs
     if (location.state?.prompt && location.state?.response) {
       setPrompt(location.state.prompt);
       setResponse(location.state.response);
@@ -50,41 +49,41 @@ export default function AnalyzePage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8 animate-in fade-in duration-500">
+    <div className="max-w-6xl mx-auto p-6 space-y-8">
       <header>
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-700">
+        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400">
           Analyze Incident
         </h1>
-        <p className="text-slate-500 mt-1">
+        <p className="text-neutral-400 mt-1">
           Submit a prompt and response pair for forensic analysis.
         </p>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Input Form */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-6">
           <form onSubmit={handleAnalyze} className="space-y-5">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-neutral-300 mb-1">
                 User Prompt
               </label>
               <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="w-full h-32 p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow outline-none resize-none font-mono text-sm"
+                className="w-full h-32 p-3 border border-neutral-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow outline-none resize-none font-mono text-sm bg-neutral-800 text-neutral-100 placeholder-neutral-500"
                 placeholder="Enter the prompt that was sent to the model..."
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-neutral-300 mb-1">
                 Model Response
               </label>
               <textarea
                 value={response}
                 onChange={(e) => setResponse(e.target.value)}
-                className="w-full h-48 p-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow outline-none resize-none font-mono text-sm"
+                className="w-full h-48 p-3 border border-neutral-700 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow outline-none resize-none font-mono text-sm bg-neutral-800 text-neutral-100 placeholder-neutral-500"
                 placeholder="Enter the exact response returned by the model..."
                 required
               />
@@ -96,11 +95,11 @@ export default function AnalyzePage() {
                 id="save_incident"
                 checked={saveIncident}
                 onChange={(e) => setSaveIncident(e.target.checked)}
-                className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                className="w-4 h-4 text-blue-600 rounded border-neutral-600 focus:ring-blue-500 bg-neutral-700"
               />
               <label
                 htmlFor="save_incident"
-                className="text-sm text-slate-700 cursor-pointer"
+                className="text-sm text-neutral-400 cursor-pointer"
               >
                 Save to incident corpus (unlabelled)
               </label>
@@ -118,31 +117,31 @@ export default function AnalyzePage() {
         </div>
 
         {/* Results Panel */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
-          <div className="bg-slate-50 border-b border-slate-200 px-6 py-4">
-            <h2 className="text-lg font-semibold text-slate-800">
+        <div className="bg-neutral-900 rounded-xl border border-neutral-800 flex flex-col overflow-hidden">
+          <div className="bg-neutral-800/60 border-b border-neutral-800 px-6 py-4">
+            <h2 className="text-lg font-semibold text-neutral-200">
               Analysis Results
             </h2>
           </div>
 
           <div className="p-6 flex-1 overflow-y-auto">
             {loading ? (
-              <div className="h-full flex flex-col items-center justify-center text-slate-400">
+              <div className="h-full flex flex-col items-center justify-center text-neutral-400">
                 <Spinner />
                 <p className="mt-4 text-sm animate-pulse">
                   Running retrieval-augmented analysis...
                 </p>
               </div>
             ) : !result ? (
-              <div className="h-full flex items-center justify-center text-slate-400">
+              <div className="h-full flex items-center justify-center text-neutral-500">
                 <p>Submit an incident to view forensic analysis.</p>
               </div>
             ) : (
               <div className="space-y-6">
                 {/* Prediction Header */}
-                <div className="flex items-start justify-between bg-slate-50 p-4 rounded-lg border border-slate-100">
+                <div className="flex items-start justify-between bg-neutral-800 p-4 rounded-lg border border-neutral-700">
                   <div>
-                    <p className="text-xs text-slate-500 uppercase font-semibold tracking-wider mb-1">
+                    <p className="text-xs text-neutral-500 uppercase font-semibold tracking-wider mb-1">
                       Predicted Label
                     </p>
                     <Badge
@@ -153,16 +152,16 @@ export default function AnalyzePage() {
                     />
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-slate-500 uppercase font-semibold tracking-wider mb-1">
+                    <p className="text-xs text-neutral-500 uppercase font-semibold tracking-wider mb-1">
                       Confidence
                     </p>
                     <div className="flex items-center gap-2">
-                      <div className="text-xl font-bold text-slate-800">
+                      <div className="text-xl font-bold text-neutral-100">
                         {(result.confidence * 100).toFixed(1)}%
                       </div>
-                      <div className="w-20 bg-slate-200 rounded-full h-2 mt-1">
+                      <div className="w-20 bg-neutral-700 rounded-full h-2 mt-1">
                         <div
-                          className="bg-blue-600 h-2 rounded-full"
+                          className="bg-blue-500 h-2 rounded-full"
                           style={{ width: `${result.confidence * 100}%` }}
                         ></div>
                       </div>
@@ -172,21 +171,21 @@ export default function AnalyzePage() {
 
                 {/* Explanation */}
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-700 mb-2">
+                  <h3 className="text-sm font-semibold text-neutral-400 mb-2">
                     Forensic Explanation
                   </h3>
-                  <div className="p-4 bg-blue-50/50 rounded-lg border border-blue-100 text-slate-700 leading-relaxed text-sm">
+                  <div className="p-4 bg-blue-950/30 rounded-lg border border-blue-900/40 text-neutral-300 leading-relaxed text-sm">
                     {result.generated_explanation}
                   </div>
                 </div>
 
                 {/* Retrieved Analogies */}
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-700 mb-3">
+                  <h3 className="text-sm font-semibold text-neutral-400 mb-3">
                     Retrieved Historical Analogies
                   </h3>
                   {result.retrieved_incidents.length === 0 ? (
-                    <p className="text-sm text-slate-500 italic">
+                    <p className="text-sm text-neutral-500 italic">
                       No similar incidents found in corpus.
                     </p>
                   ) : (
@@ -194,14 +193,14 @@ export default function AnalyzePage() {
                       {result.retrieved_incidents.map((inc) => (
                         <div
                           key={inc.id}
-                          className="border border-slate-200 rounded-md p-3 text-sm hover:border-blue-300 transition-colors"
+                          className="border border-neutral-800 rounded-md p-3 text-sm hover:border-blue-800 transition-colors bg-neutral-800/40"
                         >
                           <div className="flex justify-between items-center mb-2">
-                            <span className="font-mono text-xs text-slate-500 truncate w-32">
+                            <span className="font-mono text-xs text-neutral-500 truncate w-32">
                               ID: {inc.id.split("-")[0]}
                             </span>
                             <div className="flex items-center gap-3">
-                              <span className="text-xs text-slate-500">
+                              <span className="text-xs text-neutral-500">
                                 Sim: {(inc.similarity * 100).toFixed(0)}%
                               </span>
                               <Badge
@@ -211,18 +210,18 @@ export default function AnalyzePage() {
                             </div>
                           </div>
                           <div className="mb-1">
-                            <span className="font-semibold text-slate-600 text-xs uppercase">
+                            <span className="font-semibold text-neutral-500 text-xs uppercase">
                               Prompt:{" "}
                             </span>
-                            <span className="text-slate-800 line-clamp-1">
+                            <span className="text-neutral-300 line-clamp-1">
                               {inc.prompt_snippet}
                             </span>
                           </div>
                           <div>
-                            <span className="font-semibold text-slate-600 text-xs uppercase">
+                            <span className="font-semibold text-neutral-500 text-xs uppercase">
                               Response:{" "}
                             </span>
-                            <span className="text-slate-800 line-clamp-2">
+                            <span className="text-neutral-300 line-clamp-2">
                               {inc.response_snippet}
                             </span>
                           </div>

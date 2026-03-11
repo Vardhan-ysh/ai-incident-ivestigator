@@ -35,6 +35,8 @@ export interface Incident {
   response: string;
   true_label: IncidentType | null;
   severity: number | null;
+  split?: string | null;
+  reference_explanation?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -44,5 +46,7 @@ export interface EvaluationResponse {
   accuracy: number;
   macro_f1: number;
   expected_calibration_error: number;
+  rouge_l: number;           // ROUGE-L vs reference_explanation (paper §III.D)
+  grounding_ratio: number;   // % explanations citing retrieved incidents (paper C2)
   per_class_metrics: Record<string, any>;
 }

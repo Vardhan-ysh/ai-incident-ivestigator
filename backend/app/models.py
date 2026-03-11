@@ -87,6 +87,7 @@ class IncidentCreate(IncidentBase):
 
 class IncidentResponse(IncidentBase):
     id: str
+    split: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

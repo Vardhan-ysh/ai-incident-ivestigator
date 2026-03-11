@@ -81,27 +81,38 @@ def run_analysis(request: AnalyzeRequest, db: Session) -> AnalyzeResponse:
         retrieved_context=retrieved_context,
     )
 
-    db_incident = Incident(prompt=request.prompt, response=request.response)
-    db.add(db_incident)
-    db.commit()
-    db.refresh(db_incident)
+    if request.save_incident:
+        db_incident = Incident(
+            prompt=request.prompt,
+            response=request.response,
+            # true_label stays null — this is an unlabelled production incident.
+            # The predicted_label lives in ForensicAnalysis (per paper §III.A).
+        )
+        db.add(db_incident)
+        db.commit()
+        db.refresh(db_incident)
 
-    analysis = ForensicAnalysis(
-        incident_id=db_incident.id,
-        predicted_label=predicted_label,
-        confidence=calibrated_confidence,
-        generated_explanation=explanation_result["explanation"],
-        retrieved_incident_ids=",".join(incident_ids),
-        retrieved_similarities=",".join(f"{s:.4f}" for s in similarities),
-        raw_llm_classification_output=classification.get("raw_output", ""),
-        raw_llm_explanation_output=explanation_result.get("raw_output", ""),
-    )
-    db.add(analysis)
-    db.commit()
-    db.refresh(analysis)
+        analysis = ForensicAnalysis(
+            incident_id=db_incident.id,
+            predicted_label=predicted_label,
+            confidence=calibrated_confidence,
+            generated_explanation=explanation_result["explanation"],
+            retrieved_incident_ids=",".join(incident_ids),
+            retrieved_similarities=",".join(f"{s:.4f}" for s in similarities),
+            raw_llm_classification_output=classification.get("raw_output", ""),
+            raw_llm_explanation_output=explanation_result.get("raw_output", ""),
+        )
+        db.add(analysis)
+        db.commit()
+        db.refresh(analysis)
+        incident_id = db_incident.id
+    else:
+        # Ephemeral analysis only — generate a transient ID, nothing persisted.
+        import uuid
+        incident_id = str(uuid.uuid4())
 
     return AnalyzeResponse(
-        incident_id=db_incident.id,
+        incident_id=incident_id,
         predicted_label=predicted_label,
         confidence=calibrated_confidence,
         generated_explanation=explanation_result["explanation"],
