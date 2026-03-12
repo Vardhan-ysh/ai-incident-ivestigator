@@ -123,7 +123,6 @@ export default function AnalyzePage() {
               Analysis Results
             </h2>
           </div>
-
           <div className="p-6 flex-1 overflow-y-auto">
             {loading ? (
               <div className="h-full flex flex-col items-center justify-center text-neutral-400">
@@ -138,6 +137,27 @@ export default function AnalyzePage() {
               </div>
             ) : (
               <div className="space-y-6">
+                {/* v2: Triggered Signals (Deterministic Layer) */}
+                {result.detection_signals && result.detection_signals.length > 0 && (
+                  <div className="bg-red-950/20 border border-red-900/30 rounded-lg p-4">
+                    <h3 className="text-xs font-bold text-red-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                       <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                      </span>
+                      Triggered Safety Signals
+                    </h3>
+                    <div className="space-y-2">
+                      {result.detection_signals.map((sig, i) => (
+                        <div key={i} className="flex items-start gap-2 text-sm text-red-200/80">
+                          <code className="text-red-400 font-bold whitespace-nowrap">[{sig.label}]</code>
+                          <span>{sig.reason}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Prediction Header */}
                 <div className="flex items-start justify-between bg-neutral-800 p-4 rounded-lg border border-neutral-700">
                   <div>
@@ -153,15 +173,18 @@ export default function AnalyzePage() {
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-neutral-500 uppercase font-semibold tracking-wider mb-1">
-                      Confidence
+                      Evidence Strength
                     </p>
                     <div className="flex items-center gap-2">
                       <div className="text-xl font-bold text-neutral-100">
                         {(result.confidence * 100).toFixed(1)}%
                       </div>
-                      <div className="w-20 bg-neutral-700 rounded-full h-2 mt-1">
+                      <div className="w-24 bg-neutral-700 rounded-full h-2.5 mt-1 overflow-hidden">
                         <div
-                          className="bg-blue-500 h-2 rounded-full"
+                          className={`h-full transition-all duration-500 ${
+                            result.confidence > 0.8 ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" : 
+                            result.confidence > 0.5 ? "bg-blue-500" : "bg-amber-500"
+                          }`}
                           style={{ width: `${result.confidence * 100}%` }}
                         ></div>
                       </div>

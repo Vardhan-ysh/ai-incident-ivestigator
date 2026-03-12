@@ -4,8 +4,8 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, String, Float, Text, Enum, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from app.db import Base
-from pydantic import BaseModel, Field
-from typing import Optional, List, Any
+from pydantic import BaseModel, Field, field_validator
+from typing import Optional, List, Any, Dict
 
 # ==========================================
 # ENUMS
@@ -116,6 +116,7 @@ class AnalyzeResponse(BaseModel):
     generated_explanation: str
     retrieved_incidents: List[RetrievedIncidentSchema]
     similarities: List[float]
+    detection_signals: List[Dict[str, Any]] = []
 
 class ForensicAnalysisResponse(BaseModel):
     id: str
@@ -126,6 +127,23 @@ class ForensicAnalysisResponse(BaseModel):
     retrieved_incident_ids: List[str]
     retrieved_similarities: List[float]
     created_at: datetime
+
+    @field_validator("retrieved_incident_ids", mode="before")
+    @classmethod
+    def split_ids(cls, v: Any) -> List[str]:
+        if isinstance(v, str):
+            return [x.strip() for x in v.split(",") if x.strip()]
+        return v or []
+
+    @field_validator("retrieved_similarities", mode="before")
+    @classmethod
+    def split_sims(cls, v: Any) -> List[float]:
+        if isinstance(v, str):
+            try:
+                return [float(x.strip()) for x in v.split(",") if x.strip()]
+            except (ValueError, TypeError):
+                return []
+        return v or []
 
     class Config:
         from_attributes = True

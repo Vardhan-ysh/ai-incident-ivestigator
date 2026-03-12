@@ -14,6 +14,7 @@ from app.models import (
 )
 from app.vectorstore import vectorstore
 from app.llm_client import llm_client
+from app.detectors import detect_signals
 
 logger = logging.getLogger(__name__)
 
@@ -59,20 +60,43 @@ def run_analysis(request: AnalyzeRequest, db: Session) -> AnalyzeResponse:
 
     retrieved_context = "\n".join(context_parts) if context_parts else "No similar incidents found."
 
+    # v2: Deterministic Layer
+    detection = detect_signals(request.prompt, request.response)
+    deterministic_text = ""
+    if detection.has_hits:
+        deterministic_text = "\n".join([f"- {s.label.value}: {s.reason}" for s in detection.signals])
+
     classification = llm_client.classify_incident(
         prompt=request.prompt,
         response=request.response,
         retrieved_context=retrieved_context,
+        deterministic_signals=deterministic_text if detection.has_hits else None
     )
     predicted_label = classification["predicted_label"]
 
+    # v2: Composite Confidence Calculation (Evidence Strength)
+    # Factor A: Retrieval Density (how familiar is this case?)
     if similarities:
         mean_sim = sum(similarities) / len(similarities)
     else:
         mean_sim = 0.0
-    calibrated_confidence = _sigmoid(
+    
+    retrieval_strength = _sigmoid(
         settings.calib_alpha * mean_sim + settings.calib_beta
     )
+
+    # Factor B: Agreement (do rules and LLM agree?)
+    agreement_bonus = 0.0
+    if detection.has_hits:
+        # If any rule hit matches the LLM prediction, we have high agreement
+        if any(s.label.value == predicted_label for s in detection.signals):
+            agreement_bonus = 0.2
+        else:
+            agreement_bonus = -0.1 # Slight penalty for disagreement
+
+    # Final "Evidence Strength" capped at 1.0
+    # Weighted 70% retrieval familiarity, 30% agreement/rules
+    calibrated_confidence = min(1.0, retrieval_strength + agreement_bonus)
 
     explanation_result = llm_client.generate_explanation(
         prompt=request.prompt,
@@ -118,4 +142,5 @@ def run_analysis(request: AnalyzeRequest, db: Session) -> AnalyzeResponse:
         generated_explanation=explanation_result["explanation"],
         retrieved_incidents=retrieved_incidents,
         similarities=similarities,
+        detection_signals=[s.model_dump() for s in detection.signals] if detection.has_hits else []
     )

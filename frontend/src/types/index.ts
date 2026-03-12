@@ -27,6 +27,7 @@ export interface AnalyzeResponse {
   generated_explanation: string;
   retrieved_incidents: RetrievedIncident[];
   similarities: number[];
+  detection_signals: Array<{ label: IncidentType; reason: string; confidence: number }>;
 }
 
 export interface Incident {

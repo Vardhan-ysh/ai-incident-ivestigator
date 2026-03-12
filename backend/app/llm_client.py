@@ -53,6 +53,7 @@ class LLMClient:
         prompt: str,
         response: str,
         retrieved_context: str,
+        deterministic_signals: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Ask Gemini to classify the incident and return structured JSON:
@@ -66,10 +67,17 @@ class LLMClient:
             "Do NOT include markdown formatting, code fences, or any text outside the JSON."
         )
 
+        signal_section = (
+            f"## Deterministic Detection Signals\n{deterministic_signals}\n\n"
+            if deterministic_signals
+            else ""
+        )
+
         user_prompt = (
             f"## New Incident to Classify\n\n"
             f"**User Prompt:** {prompt}\n\n"
             f"**LLM Response:** {response}\n\n"
+            f"{signal_section}"
             f"## Similar Historical Incidents for Reference\n\n"
             f"{retrieved_context}\n\n"
             f"Classify this incident. Think step-by-step."
