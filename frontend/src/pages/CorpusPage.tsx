@@ -128,7 +128,7 @@ export default function CorpusPage() {
                       No incidents found in the corpus.
                     </td>
                   </tr>
-                ) : (
+                ) : Array.isArray(incidents) ? (
                   incidents.map((inc) => (
                     <tr key={inc.id} className="hover:bg-neutral-800/50 transition-colors">
                       <td className="px-6 py-4">
@@ -174,6 +174,12 @@ export default function CorpusPage() {
                       </td>
                     </tr>
                   ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center text-red-500">
+                      Error: Received invalid data from server.
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>
