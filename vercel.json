@@ -6,8 +6,14 @@
             "routePrefix": "/"
         },
         "backend": {
-            "entrypoint": "backend",
+            "entrypoint": "backend/index.py",
             "routePrefix": "/_/backend"
         }
-    }
+    },
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "/_/backend/api/$1"
+        }
+    ]
 }
