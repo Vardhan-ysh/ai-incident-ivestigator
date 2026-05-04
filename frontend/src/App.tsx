@@ -16,7 +16,6 @@ import CorpusPage from "./pages/CorpusPage";
 import EvalPage from "./pages/EvalPage";
 import SandboxPage from "./pages/SandboxPage";
 import SettingsPage from "./pages/SettingsPage";
-import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
 
 const navLinks = [
