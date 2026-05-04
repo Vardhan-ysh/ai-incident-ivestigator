@@ -17,39 +17,42 @@ import EvalPage from "./pages/EvalPage";
 import SandboxPage from "./pages/SandboxPage";
 import SettingsPage from "./pages/SettingsPage";
 import HomePage from "./pages/HomePage";
+import DashboardPage from "./pages/DashboardPage";
 
 const navLinks = [
   {
     label: "Dashboard",
     href: "/",
-    icon: <LayoutDashboard className="text-neutral-400 h-5 w-5 flex-shrink-0" />,
+    icon: (
+      <LayoutDashboard className="text-neutral-400 h-5 w-5 shrink-0" />
+    ),
   },
   {
     label: "Analyze Incident",
     href: "/analyze",
-    icon: <Search className="text-neutral-400 h-5 w-5 flex-shrink-0" />,
+    icon: <Search className="text-neutral-400 h-5 w-5 shrink-0" />,
   },
   {
     label: "Chat Sandbox",
     href: "/sandbox",
-    icon: <MessageSquare className="text-neutral-400 h-5 w-5 flex-shrink-0" />,
+    icon: <MessageSquare className="text-neutral-400 h-5 w-5 shrink-0" />,
   },
   {
     label: "Incident Corpus",
     href: "/corpus",
-    icon: <Database className="text-neutral-400 h-5 w-5 flex-shrink-0" />,
+    icon: <Database className="text-neutral-400 h-5 w-5 shrink-0" />,
   },
   {
     label: "Evaluation",
     href: "/eval",
-    icon: <Shield className="text-neutral-400 h-5 w-5 flex-shrink-0" />,
+    icon: <Shield className="text-neutral-400 h-5 w-5 shrink-0" />,
   },
 ];
 
 const settingsLink = {
   label: "Settings",
   href: "/settings",
-  icon: <SettingsIcon className="text-neutral-400 h-5 w-5 flex-shrink-0" />,
+  icon: <SettingsIcon className="text-neutral-400 h-5 w-5 shrink-0" />,
 };
 
 function AppShell() {
@@ -61,8 +64,11 @@ function AppShell() {
         <SidebarBody className="justify-between gap-10 h-full">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5 py-2 px-2 mb-4 min-w-0">
-              <div className="bg-blue-600 p-1.5 rounded-lg flex-shrink-0">
+            <Link
+              to="/"
+              className="flex items-center gap-2.5 py-2 px-2 mb-4 min-w-0"
+            >
+              <div className="bg-blue-600 p-1.5 rounded-lg shrink-0">
                 <Shield className="w-5 h-5 text-white" />
               </div>
               <motion.div
@@ -99,7 +105,7 @@ function AppShell() {
       {/* Main content */}
       <main className="flex-1 overflow-y-auto bg-neutral-950">
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<DashboardPage />} />
           <Route path="/analyze" element={<AnalyzePage />} />
           <Route path="/sandbox" element={<SandboxPage />} />
           <Route path="/corpus" element={<CorpusPage />} />
