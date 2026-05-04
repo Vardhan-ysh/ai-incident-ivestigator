@@ -96,40 +96,38 @@ export default function CorpusPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-neutral-100">Incident Corpus</h1>
-        <p className="text-neutral-400 mt-1">
-          Browse historical incidents. Click <strong className="text-neutral-300">View Details</strong> to human-verify any unlabelled incident.
-        </p>
-      </header>
+    <div className="min-h-screen bg-neutral-950 p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-neutral-100">Incident Corpus</h1>
+          <p className="text-neutral-400 mt-1">
+            Browse historical incidents. Click <strong className="text-neutral-300">View Details</strong> to human-verify any unlabelled incident.
+          </p>
+        </header>
 
-      {error && <ErrorAlert message={error} />}
+        {error && <ErrorAlert message={error} />}
 
-      {loading ? (
-        <Spinner />
-      ) : (
-        <div className="bg-neutral-900 rounded-xl border border-neutral-800 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="text-xs text-neutral-500 uppercase bg-neutral-800/60 border-b border-neutral-800">
-                <tr>
-                  <th className="px-6 py-3 font-semibold">ID / Date</th>
-                  <th className="px-6 py-3 font-semibold">Label Status</th>
-                  <th className="px-6 py-3 font-semibold">Prompt Snippet</th>
-                  <th className="px-6 py-3 font-semibold">Severity</th>
-                  <th className="px-6 py-3 font-semibold">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-800">
-                {incidents.length === 0 ? (
+        {loading ? (
+          <Spinner />
+        ) : incidents.length === 0 ? (
+          <div className="bg-neutral-900 rounded-xl border border-neutral-800 p-12 text-center">
+            <p className="text-neutral-500">No incidents found in the corpus.</p>
+          </div>
+        ) : (
+          <div className="bg-neutral-900 rounded-xl border border-neutral-800 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-neutral-500 uppercase bg-neutral-800/60 border-b border-neutral-800">
                   <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-neutral-500">
-                      No incidents found in the corpus.
-                    </td>
+                    <th className="px-6 py-3 font-semibold">ID / Date</th>
+                    <th className="px-6 py-3 font-semibold">Label Status</th>
+                    <th className="px-6 py-3 font-semibold">Prompt Snippet</th>
+                    <th className="px-6 py-3 font-semibold">Severity</th>
+                    <th className="px-6 py-3 font-semibold">Action</th>
                   </tr>
-                ) : Array.isArray(incidents) ? (
-                  incidents.map((inc) => (
+                </thead>
+                <tbody className="divide-y divide-neutral-800">
+                  {Array.isArray(incidents) && incidents.map((inc) => (
                     <tr key={inc.id} className="hover:bg-neutral-800/50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
@@ -173,23 +171,16 @@ export default function CorpusPage() {
                         </button>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-red-500">
-                      Error: Received invalid data from server.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      )}
+          )}
 
-      {/* ── Detail Drawer ── */}
-      {selected && (
-        <div className="fixed inset-0 z-50 flex justify-end">
+        {/* ── Detail Drawer ── */}
+        {selected && (
+          <div className="fixed inset-0 z-50 flex justify-end">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -387,7 +378,8 @@ export default function CorpusPage() {
             </div>
           </div>
         </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
